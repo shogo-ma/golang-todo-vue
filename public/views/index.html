@@ -1,8 +1,9 @@
-{{define "index" }}
 <html>
   <head>
     <meta charset="UTF-8">
     <title>Todo App</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -16,8 +17,23 @@
                   </div>
               </div>
           </nav>
+          <div id="input_field">
+              <textarea v-model="content"></textarea>
+              <button v-on:click="registerTodo">Submit</button>
+          </div>
+
+          <br/>
+          <br/>
+          <div id="app">
+              <ul>
+                  <div v-for="todo in todos">
+                      <li>
+                          <label><input type="checkbox" value="" v-on:click="checkedTodo(todo.todo_id)"> {{ todo.text }}</label>
+                      </li>
+                  </div>
+              </ul>
+          </div>
        </div>
       <script src="/static/js/bundle.js"></script>
   </body>
 </html>
-{{ end }}

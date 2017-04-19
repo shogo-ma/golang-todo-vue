@@ -24,7 +24,9 @@ func getTodo(c echo.Context) error {
 
 	todo := new(Todo)
 	err := collection.Find(bson.M{
-		"todo_id": todo_id,
+		"todoid": bson.M{
+			"$eq": todo_id,
+		},
 	}).One(&todo)
 
 	if err != nil {
@@ -54,8 +56,11 @@ func postTodo(c echo.Context) error {
 
 func deleteTodo(c echo.Context) error {
 	todo_id := c.Param("id")
+
 	err := collection.Remove(bson.M{
-		"todo_id": todo_id,
+		"todoid": bson.M{
+			"$eq": todo_id,
+		},
 	})
 
 	if err != nil {
@@ -71,7 +76,9 @@ func checkedTodo(c echo.Context) error {
 
 	todo := new(Todo)
 	err := collection.Find(bson.M{
-		"todo_id": todo_id,
+		"todoid": bson.M{
+			"$eq": todo_id,
+		},
 	}).One(&todo)
 
 	if err != nil {
@@ -79,12 +86,18 @@ func checkedTodo(c echo.Context) error {
 	}
 
 	// update query
-	query := bson.M{"todo_Id": todo_id}
-	change := bson.M{"$set": bson.M{
-		"todo_id": todo_id,
-		"text":    todo.Text,
-		"status":  true,
-	}}
+	query := bson.M{
+		"todoid": bson.M{
+			"$eq": todo_id,
+		},
+	}
+
+	change := bson.M{
+		"$set": bson.M{
+			"todoid": todo_id,
+			"text":   todo.Text,
+			"status": true,
+		}}
 
 	err = collection.Update(query, change)
 	if err != nil {
@@ -101,7 +114,7 @@ func getTodos(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, todos)
+	return c.JSON(http.StatusOK, todos)
 }
 
 func main() {
@@ -120,7 +133,8 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.GET("/hello", dispTodos)
+	e.Static("/", "public/views")
+	e.Static("/static", "assets")
 
 	e.POST("/api/v1/todo", postTodo)
 	e.GET("/api/v1/todos", getTodos)

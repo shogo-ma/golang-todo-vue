@@ -1,0 +1,25 @@
+textarea {
+    width: 100%;
+    height: 10%;
+}
+
+ul {
+    padding: 0;
+    position: relative;
+}
+
+ul li {
+    color: black;
+    border-left: solid 6px #b8b8b8;
+    border-bottom: solid 2px #dadada;
+    background: #e8e8e8;
+    margin-bottom: 5px;
+    line-height: 1.5;
+    padding: 0.5em;
+    list-style-type: none;
+    font-weight: bold;
+}
+
+ul li label {
+    font-size: 20px;
+}

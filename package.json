@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "webpack": "^2.4.1"
+  },
+  "dependencies": {
+    "axios": "^0.16.1"
   }
 }

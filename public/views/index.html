@@ -17,14 +17,13 @@
                   </div>
               </div>
           </nav>
-          <div id="input_field">
+
+          <div id="app">
               <textarea v-model="content"></textarea>
               <button v-on:click="registerTodo">Submit</button>
-          </div>
-
-          <br/>
-          <br/>
-          <div id="app">
+            <br/>
+            <br/>
+              <h3>TODO</h3>
               <ul>
                   <div v-for="todo in todos">
                       <li v-if="todo.status==false">
@@ -33,6 +32,7 @@
                   </div>
               </ul>
 
+              <h3>DONE</h3>
               <ul>
                   <div v-for="todo in todos">
                       <li v-if="todo.status==true">

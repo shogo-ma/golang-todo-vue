@@ -9,20 +9,15 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/shogo-ma/todo_app/model"
 )
-
-type Todo struct {
-	TodoID string `json:"todo_id"`
-	Text   string `json:"text"`
-	Status bool   `json:"status"`
-}
 
 var collection *mgo.Collection
 
 func getTodo(c echo.Context) error {
 	todo_id := c.Param("id")
 
-	todo := new(Todo)
+	todo := new(model.Todo)
 	err := collection.Find(bson.M{
 		"todoid": bson.M{
 			"$eq": todo_id,
@@ -38,7 +33,7 @@ func getTodo(c echo.Context) error {
 
 // DBにpostする
 func postTodo(c echo.Context) error {
-	data := new(Todo)
+	data := new(model.Todo)
 	if err := c.Bind(data); err != nil {
 		return err
 	}
@@ -74,7 +69,7 @@ func deleteTodo(c echo.Context) error {
 func checkedTodo(c echo.Context) error {
 	todo_id := c.Param("id")
 
-	todo := new(Todo)
+	todo := new(model.Todo)
 	err := collection.Find(bson.M{
 		"todoid": bson.M{
 			"$eq": todo_id,
@@ -108,7 +103,7 @@ func checkedTodo(c echo.Context) error {
 }
 
 func getTodos(c echo.Context) error {
-	var todos []Todo
+	var todos []model.Todo
 	if err := collection.Find(nil).All(&todos); err != nil {
 		log.Fatal(err)
 		return err

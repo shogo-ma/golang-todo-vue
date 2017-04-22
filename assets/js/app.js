@@ -42,7 +42,7 @@ var getTodos = () => {
     template: `
       <div>
           <textarea v-model="content"></textarea>
-          <button v-on:click="addTodo">add Todo</button>
+          <button @click="addTodo">add Todo</button>
       </div>
       `,
     data: function() {
@@ -55,9 +55,7 @@ var getTodos = () => {
         axios.post("/api/v1/todo", {
           text: this.content
         }).then((res) => {
-          getTodos().then((res) => {
-            todos = res.data;
-          })
+            this.$emit('reload');
         })
         this.content = "";
       }
@@ -67,7 +65,7 @@ var getTodos = () => {
   var todoAppComponent = Vue.component('todo-app', {
     template: `
       <div>
-          <todo-input-field :todos="todos"></todo-input-field>
+          <todo-input-field :todos="todos" v-on:reload="reloadTodoList"></todo-input-field>
           <h3>TODO</h3>
           <todo-items :todo-status=false :todos="todos"></todo-items>
           <h3>DONE</h3>
@@ -88,6 +86,16 @@ var getTodos = () => {
       return {
         todos: []
       }
+    },
+    methods: {
+        reloadTodoList: function() {
+            console.log("reloadTodoList")
+            getTodos().then((res) => {
+                this.todos = res.data;
+            }).catch((res) => {
+                console.log("reloadTodoList error");
+            })
+        }
     }
   })
 

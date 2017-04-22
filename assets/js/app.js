@@ -5,40 +5,97 @@ var getTodos = () => {
 }
 
 (function(Vue) {
-  "use strict";
+  var todoComponent = Vue.component('todo', {
+    props: ['todo'],
+    template: `
+        <label>
+            <input type="checkbox" v-on:click="checkedTodo(todo)"> {{ todo.text }}
+        </label>
+        `,
+    methods: {
+      checkedTodo: function(todo) {
+        axios.put(`/api/v1/checked/${todo.todo_id}`).then((res) => {
+          todo.status = true;
+        });
+      }
+    }
+  })
 
-  new Vue({
-    el: '#app',
-    data: {
-      todos: [],
-      content: "",
+  var todoItemsComponent = Vue.component('todo-items', {
+    props: ['todoStatus', 'todos'],
+    template: `
+      <ul>
+          <div v-for="todo in todos">
+              <li v-if="todo.status==todoStatus">
+                  <todo :todo="todo"></todo>
+              </li>
+          </div>
+      </ul>
+    `,
+    components: {
+      todoComponent,
+    },
+  })
+
+  var todoInputComponent = Vue.component('todo-input-field', {
+    props: ['todos'],
+    template: `
+      <div>
+          <textarea v-model="content"></textarea>
+          <button v-on:click="addTodo">add Todo</button>
+      </div>
+      `,
+    data: function() {
+      return {
+        content: ''
+      }
+    },
+    methods: {
+      addTodo: function() {
+        axios.post("/api/v1/todo", {
+          text: this.content
+        }).then((res) => {
+          getTodos().then((res) => {
+            todos = res.data;
+          })
+        })
+        this.content = "";
+      }
+    }
+  })
+
+  var todoAppComponent = Vue.component('todo-app', {
+    template: `
+      <div>
+          <todo-input-field :todos="todos"></todo-input-field>
+          <h3>TODO</h3>
+          <todo-items :todo-status=false :todos="todos"></todo-items>
+          <h3>DONE</h3>
+          <todo-items :todo-status=true :todos="todos"></todo-items>
+      </div>
+      `,
+    components: {
+      todoInputComponent,
     },
     created: function() {
       getTodos().then((res) => {
-          this.todos = res.data;
+        this.todos = res.data;
       }).catch((res) => {
-          console.log("error");
-      });
+        console.log("error");
+      })
     },
-    methods: {
-      registerTodo: function() {
-        axios.post("/api/v1/todo", {
-          text: this.content,
-        }).then((res) => {
-          getTodos().then((res) => {
-            this.todos = res.data;
-          });
-        });
-      },
-      checkedTodo: function(todo_id) {
-        console.log(todo_id)
-        axios.put(`/api/v1/checked/${todo_id}`).then((res) => {
-          console.log(`checked: ${todo_id}`);
-          getTodos().then((res) => {
-            this.todos = res.data;
-          });
-        })
+    data: function() {
+      return {
+        todos: []
       }
+    }
+  })
+
+  // TODO: refactaring
+  new Vue({
+    el: '#app',
+    components: {
+      todoAppComponent,
     }
   });
 })(Vue);

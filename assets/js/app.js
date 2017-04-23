@@ -4,7 +4,10 @@ var getTodos = () => {
   return axios.get('/api/v1/todos')
 }
 
+
 (function(Vue) {
+  require('../css/style.css')
+
   var todoComponent = Vue.component('todo', {
     props: ['todo'],
     template: `
